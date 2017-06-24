@@ -9,11 +9,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class Application implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -26,6 +30,12 @@ public class Application implements CommandLineRunner {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
     @Override
     public void run(String... strings) throws Exception {
@@ -41,7 +51,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Bean
-    public Client billingClient(@Value("${billingEndpoint}") String billingEndpoint) {
-        return new Client(billingEndpoint);
+    public Client billingClient(@Autowired RestTemplate restTemplate) {
+        return new Client(restTemplate);
     }
 }
