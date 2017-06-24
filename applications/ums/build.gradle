@@ -43,4 +43,5 @@ dependencies {
     compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
     compile("com.h2database:h2")
     compile("io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker")
+    compile("org.springframework.cloud:spring-cloud-starter-config")
 }
